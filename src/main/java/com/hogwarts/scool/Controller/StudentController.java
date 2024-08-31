@@ -36,9 +36,13 @@ public class StudentController {
         studentService.delete(id);
     }
 
-    @GetMapping
+    @GetMapping("/by-age-range")
+    public List<Student> getByAgeRange(@RequestParam("min") int min, @RequestParam("max") int max) {
+        return studentService.findStudentsByAgeBetween(min, max);
+    }
+
+    @GetMapping("/by-age")
     public List<Student> getByAge(@RequestParam("age") int age) {
         return studentService.getByAge(age);
     }
-
 }

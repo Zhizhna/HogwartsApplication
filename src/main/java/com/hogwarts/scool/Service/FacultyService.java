@@ -14,5 +14,5 @@ public interface FacultyService {
 
     void delete(Long id);
 
-    List<Faculty> getByColor(String color);
+    List<Faculty> findByNameOrColor(String query);
 }
