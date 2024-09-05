@@ -2,13 +2,14 @@ package com.sky.hogwarts.Controller;
 
 
 import com.sky.hogwarts.Model.Faculty;
+import com.sky.hogwarts.Model.Student;
 import com.sky.hogwarts.Service.FacultyService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/faculties")
+@RequestMapping("faculties")
 public class FacultyController {
 
     private final FacultyService facultyService;
@@ -17,28 +18,39 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @GetMapping("/{id}")
-    public Faculty get(@PathVariable("id") Long id) {
-        return facultyService.get(id);
-    }
-
     @PostMapping
-    public Faculty add(@RequestBody Faculty faculty) {
-        return facultyService.add(faculty);
+    public Faculty create(@RequestBody Faculty faculty) {
+        return facultyService.create(faculty);
     }
 
-    @PutMapping("/{id}")
-    public Faculty update(@PathVariable("id") Long id, @RequestBody Faculty faculty) {
+    @GetMapping("{id}")
+    public Faculty read(@PathVariable Long id) {
+        return facultyService.read(id);
+    }
+
+    @PutMapping("{id}")
+    public Faculty update(@PathVariable Long id, @RequestBody Faculty faculty) {
         return facultyService.update(id, faculty);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id) {
-        facultyService.delete(id);
+    @DeleteMapping("{id}")
+    public Faculty delete(@PathVariable Long id) {
+        return facultyService.delete(id);
     }
 
-    @GetMapping("/search")
-    public List<Faculty> searchByNameOrColor(@RequestParam("query") String query) {
-        return facultyService.findByNameOrColor(query);
+    @GetMapping
+    public List<Faculty> filterByColor(@RequestParam String color) {
+        return facultyService.filterByColor(color);
     }
+
+    @GetMapping("byNameOrColorIgnoreCase")
+    public List<Faculty> findAllByNameIgnoreCaseOrColorIgnoreCase(String name, String color) {
+        return facultyService.findAllByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    @GetMapping("{id}/students")
+    public List<Student> getStudents(@PathVariable Long id) {
+        return facultyService.getStudents(id);
+    }
+
 }

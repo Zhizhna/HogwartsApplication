@@ -1,7 +1,7 @@
 package com.sky.hogwarts.Impl;
 
-import com.sky.hogwarts.Error.ResourceNotFoundException;
 import com.sky.hogwarts.Model.Faculty;
+import com.sky.hogwarts.Model.Student;
 import com.sky.hogwarts.Repository.FacultyRepository;
 import com.sky.hogwarts.Service.FacultyService;
 import org.springframework.stereotype.Service;
@@ -18,35 +18,47 @@ public class FacultyServiceImpl implements FacultyService {
     }
 
     @Override
-    public Faculty add(Faculty faculty) {
+    public Faculty create(Faculty faculty) {
         return facultyRepository.save(faculty);
     }
 
     @Override
-    public Faculty get(Long id) {
-        return facultyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with id " + id));
+    public Faculty read(Long id) {
+        return facultyRepository.findById(id).orElse(null);
     }
 
     @Override
     public Faculty update(Long id, Faculty faculty) {
-        Faculty existingFaculty = facultyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Faculty not found with id " + id));
-        existingFaculty.setName(faculty.getName());
-        existingFaculty.setColor(faculty.getColor());
-        return facultyRepository.save(existingFaculty);
+        return facultyRepository.findById(id).map(facultyFromDb -> {
+            facultyFromDb.setName(faculty.getName());
+            facultyFromDb.setColor(faculty.getColor());
+            facultyRepository.save(facultyFromDb);
+            return facultyFromDb;
+        }).orElse(null);
     }
 
     @Override
-    public void delete(Long id) {
-        if (!facultyRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Faculty not found with id " + id);
-        }
-        facultyRepository.deleteById(id);
+    public Faculty delete(Long id) {
+        return facultyRepository.findById(id).map(faculty -> {
+            facultyRepository.deleteById(id);
+            return faculty;
+        }).orElse(null);
     }
 
     @Override
-    public List<Faculty> findByNameOrColor(String query) {
-        return facultyRepository.findByNameIgnoreCaseOrColorIgnoreCase(query, query);
+    public List<Faculty> filterByColor(String color) {
+        return facultyRepository.findAllByColor(color);
+    }
+
+    @Override
+    public List<Faculty> findAllByNameIgnoreCaseOrColorIgnoreCase(String name, String color) {
+        return facultyRepository.findAllByNameIgnoreCaseOrColorIgnoreCase(name, color);
+    }
+
+    @Override
+    public List<Student> getStudents(Long facultyId) {
+        return facultyRepository.findById(facultyId)
+                .map(Faculty::getStudents)
+                .orElse(null);
     }
 }
