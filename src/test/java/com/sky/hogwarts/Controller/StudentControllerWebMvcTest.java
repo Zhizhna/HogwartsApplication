@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @WebMvcTest(StudentController.class)
-public class StudentControllerTest {
+public class StudentControllerWebMvcTest {
 
     @Autowired
     private MockMvc mockMvc;
