@@ -1,20 +1,23 @@
 package com.sky.hogwarts.Service;
 
+import com.sky.hogwarts.Model.Faculty;
 import com.sky.hogwarts.Model.Student;
 
 import java.util.List;
 
 public interface StudentService {
 
-    Student add(Student student);
+    Student create(Student student);
 
-    Student get(Long id);
+    Student read(Long id);
 
     Student update(Long id, Student student);
 
-    void delete(Long id);
+    Student delete(Long id);
 
-    List<Student> getByAge(int age);
+    List<Student> filterByAge(int age);
 
-    List<Student> findStudentsByAgeBetween(int min, int max);
+    List<Student> findAllByAgeBetween(int fromAge, int toAge);
+
+    Faculty getFaculty(Long studentId);
 }

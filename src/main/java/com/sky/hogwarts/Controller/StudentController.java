@@ -1,5 +1,6 @@
 package com.sky.hogwarts.Controller;
 
+import com.sky.hogwarts.Model.Faculty;
 import com.sky.hogwarts.Model.Student;
 import com.sky.hogwarts.Service.StudentService;
 import org.springframework.web.bind.annotation.*;
@@ -7,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/students")
+@RequestMapping("students")
 public class StudentController {
 
     private final StudentService studentService;
@@ -16,33 +17,38 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("{id}")
-    public Student get(@PathVariable("id") Long id) {
-        return studentService.get(id);
+    @PostMapping
+    public Student create(@RequestBody Student student) {
+        return studentService.create(student);
     }
 
-    @PostMapping
-    public Student add(@RequestBody Student student) {
-        return studentService.add(student);
+    @GetMapping("{id}")
+    public Student read(@PathVariable Long id) {
+        return studentService.read(id);
     }
 
     @PutMapping("{id}")
-    public Student update(@PathVariable("id") Long id, @RequestBody Student student) {
+    public Student update(@PathVariable Long id, @RequestBody Student student) {
         return studentService.update(id, student);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable("id") Long id) {
-        studentService.delete(id);
+    public Student delete(@PathVariable Long id) {
+        return studentService.delete(id);
     }
 
-    @GetMapping("/by-age-range")
-    public List<Student> getByAgeRange(@RequestParam("min") int min, @RequestParam("max") int max) {
-        return studentService.findStudentsByAgeBetween(min, max);
+    @GetMapping
+    public List<Student> filterByAge(@RequestParam int age) {
+        return studentService.filterByAge(age);
     }
 
-    @GetMapping("/by-age")
-    public List<Student> getByAge(@RequestParam("age") int age) {
-        return studentService.getByAge(age);
+    @GetMapping("byAgeBetween")
+    public List<Student> findAllByAgeBetween(int fromAge, int toAge) {
+        return studentService.findAllByAgeBetween(fromAge, toAge);
+    }
+
+    @GetMapping("{id}/faculty")
+    public Faculty getFaculty(@PathVariable Long id) {
+        return studentService.getFaculty(id);
     }
 }
