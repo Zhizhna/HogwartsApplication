@@ -28,17 +28,17 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 public class AvatarController {
 
     private final AvatarService avatarService;
+    private final AvatarRepository avatarRepository;
 
-    public AvatarController(AvatarService avatarService) {
+    public AvatarController(AvatarService avatarService, AvatarRepository avatarRepository) {
         this.avatarService = avatarService;
-    }
+        this.avatarRepository = avatarRepository;
 
-    @Autowired
-    private AvatarRepository avatarRepository;
+    }
 
     @GetMapping
     public Page<Avatar> getAvatars(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size); // Используем правильный Pageable
+        Pageable pageable = PageRequest.of(page, size);
         return avatarRepository.findAll(pageable);
     }
 

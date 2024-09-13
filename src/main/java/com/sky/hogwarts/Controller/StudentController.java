@@ -15,14 +15,13 @@ import java.util.List;
 @RequestMapping("students")
 public class StudentController {
 
+    private final StudentRepository studentRepository;
     private final StudentService studentService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, StudentRepository studentRepository) {
         this.studentService = studentService;
+        this.studentRepository = studentRepository;
     }
-
-    @Autowired
-    private StudentRepository studentRepository;
 
     @GetMapping("/average-age")
     public double getAverageAge() {
