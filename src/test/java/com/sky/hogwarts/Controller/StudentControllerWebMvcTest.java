@@ -2,6 +2,7 @@ package com.sky.hogwarts.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sky.hogwarts.Model.Student;
+import com.sky.hogwarts.Repository.StudentRepository;
 import com.sky.hogwarts.Service.AvatarService;
 import com.sky.hogwarts.Service.StudentService;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ public class StudentControllerWebMvcTest {
 
     @MockBean
     private StudentService studentService;
+
+    @MockBean
+    private StudentRepository studentRepository;
 
     @MockBean
     private AvatarService avatarService;

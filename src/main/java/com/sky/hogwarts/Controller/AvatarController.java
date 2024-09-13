@@ -1,8 +1,12 @@
 package com.sky.hogwarts.Controller;
 
 import com.sky.hogwarts.Model.Avatar;
+import com.sky.hogwarts.Repository.AvatarRepository;
 import com.sky.hogwarts.Service.AvatarService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +31,15 @@ public class AvatarController {
 
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
+    }
+
+    @Autowired
+    private AvatarRepository avatarRepository;
+
+    @GetMapping
+    public Page<Avatar> getAvatars(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size); // Используем правильный Pageable
+        return avatarRepository.findAll(pageable);
     }
 
     @PostMapping(value = "/{studentId}/avatar", consumes = MULTIPART_FORM_DATA_VALUE)

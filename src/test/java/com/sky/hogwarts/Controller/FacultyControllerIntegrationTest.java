@@ -24,6 +24,8 @@ public class FacultyControllerIntegrationTest {
     @LocalServerPort
     private int port;
 
+    
+
     @Autowired
     private FacultyRepository facultyRepository;
 
