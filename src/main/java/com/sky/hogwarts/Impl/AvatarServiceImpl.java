@@ -5,6 +5,8 @@ import com.sky.hogwarts.Model.Student;
 import com.sky.hogwarts.Repository.AvatarRepository;
 import com.sky.hogwarts.Repository.StudentRepository;
 import com.sky.hogwarts.Service.AvatarService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +19,9 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 @Service
 public class AvatarServiceImpl implements AvatarService {
+
+    Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+
 
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
@@ -33,9 +38,11 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Avatar uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
-        Student student = studentRepository.findById(studentId).orElseThrow(() ->
-                new IllegalArgumentException("Student with id " + studentId + " is not found in database")
-        );
+        logger.info("Was evoked method for uploading the avatar for student with id {}", studentId);
+        Student student = studentRepository.findById(studentId).orElseThrow(() -> {
+            logger.error("Student with id {} is not in database", studentId);
+            return new IllegalArgumentException("Student with id " + studentId + " is not found in database");
+                });
 
         Path avatarPath = saveToLocalDirectory(student, avatarFile);
         Avatar avatar = saveToDb(student, avatarPath, avatarFile);
@@ -45,9 +52,11 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Avatar findAvatar(Long avatarId) {
-        return avatarRepository.findById(avatarId).orElseThrow(() ->
-                new IllegalArgumentException("Avatar with id " + avatarId + " is not found in database")
-        );
+        logger.info("Was evoked method for finding the avatar with id {}", avatarId);
+        return avatarRepository.findById(avatarId).orElseThrow(() -> {
+            logger.error("Avatar with id {} is not in database", avatarId);
+            return new IllegalArgumentException("Avatar with id " + avatarId + " is not found in database");
+        });
     }
 
     private Path saveToLocalDirectory(Student student, MultipartFile avatarFile) throws IOException {
@@ -79,7 +88,9 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     private Avatar getAvatarByStudent(Student student) {
+        logger.info("was evoked method for finding avatar by student: {}", student);
         return avatarRepository.findByStudent(student).orElseGet(() -> {
+            logger.warn("Student : {} has no avatar, making new avatar",student);
             Avatar avatar = new Avatar();
             avatar.setStudent(student);
             return avatar;
