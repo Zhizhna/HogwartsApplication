@@ -4,12 +4,13 @@ import com.sky.hogwarts.Model.Faculty;
 import com.sky.hogwarts.Model.Student;
 import com.sky.hogwarts.Repository.StudentRepository;
 import com.sky.hogwarts.Service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("students")
@@ -21,11 +22,6 @@ public class StudentController {
     public StudentController(StudentService studentService, StudentRepository studentRepository) {
         this.studentService = studentService;
         this.studentRepository = studentRepository;
-    }
-
-    @GetMapping("/average-age")
-    public double getAverageAge() {
-        return studentRepository.getAverageAgeOfStudents();
     }
 
     @GetMapping("/count")
@@ -73,4 +69,24 @@ public class StudentController {
     public Faculty getFaculty(@PathVariable Long id) {
         return studentService.getFaculty(id);
     }
+
+    @GetMapping("NameStartingWithLetterA")
+    public List<String> getNamesStartingWithA() {
+        List<Student> students = studentRepository.findByNameStartingWith("A");
+        return students.stream()
+                .map(student -> student.getName().toUpperCase())
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("average-age")
+    public double getAverageAge() {
+        List<Student> students = studentRepository.findAll();
+        return students.stream()
+                .mapToInt(Student::getAge)
+                .average()
+                .orElse(0.0);
+    }
+
+
 }

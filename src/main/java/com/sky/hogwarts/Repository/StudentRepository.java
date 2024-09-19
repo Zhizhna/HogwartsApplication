@@ -22,4 +22,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("SELECT s FROM Student s ORDER BY s.id DESC")
     List<Student> findLastFiveStudents(Pageable pageable);
 
+    List<Student> findByNameStartingWith(String prefix);
 }
