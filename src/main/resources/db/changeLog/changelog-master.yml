@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: Scripts/course-four-lesson-three.sql
